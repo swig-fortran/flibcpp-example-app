@@ -6,14 +6,14 @@
 #---------------------------------------------------------------------------#
 
 cmake_minimum_required(VERSION 3.8)
-project(flibcpp VERSION 0.1.0 LANGUAGES Fortran)
+project(FlibcppExample VERSION 0.1.0 LANGUAGES Fortran)
 
 #---------------------------------------------------------------------------#
 # DEPENDENCIES
 #---------------------------------------------------------------------------#
 
 # Use the 'FlibcppConfig.cmake' file installed by flibcpp
-find_package(flibcpp REQUIRED CONFIG)
+find_package(Flibcpp REQUIRED CONFIG)
 
 #---------------------------------------------------------------------------#
 # LIBRARY
@@ -36,8 +36,8 @@ target_include_directories(example_backend
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
 
-# Link against flibcpp libraries
-target_link_libraries(example_backend flibcpp::flc_random flibcpp::flc_algorithm)
+# Link against Flibcpp libraries
+target_link_libraries(example_backend Flibcpp::flc_random Flibcpp::flc_algorithm)
 
 # Use correct Fortran module directories
 target_include_directories(example_backend

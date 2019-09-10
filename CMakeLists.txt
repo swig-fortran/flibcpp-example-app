@@ -5,8 +5,17 @@
 # Distributed under an MIT open source license: see LICENSE for details.
 #---------------------------------------------------------------------------#
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 project(FlibcppExample VERSION 0.1.0 LANGUAGES Fortran)
+
+#---------------------------------------------------------------------------#
+# OPTIONS
+#---------------------------------------------------------------------------#
+
+if (NOT DEFINED(CMAKE_INSTALL_RPATH_USE_LINK_PATH))
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON CACHE STRING
+      "Inform installed binaries of linked library rpaths")
+endif()
 
 #---------------------------------------------------------------------------#
 # DEPENDENCIES
@@ -24,26 +33,17 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/module)
 add_library(example_backend
   "src/example_backend.f90")
 
-# Use correct include directories for C++
-target_include_directories(example_backend
-    PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-)
-
 # Use correct Fortran module directories
 target_include_directories(example_backend
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
 # Link against Flibcpp libraries
 target_link_libraries(example_backend Flibcpp::flc_random Flibcpp::flc_algorithm)
-
-# Use correct Fortran module directories
-target_include_directories(example_backend
-  PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
-)
 
 #---------------------------------------------------------------------------#
 # APP

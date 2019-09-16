@@ -9,7 +9,7 @@ module example_backend
 
   integer, dimension(:), allocatable :: example_array
 
-  type(Engine), private :: rng
+  type(Engine), private, save :: rng
 contains
 
 subroutine init(num_ints, seed)

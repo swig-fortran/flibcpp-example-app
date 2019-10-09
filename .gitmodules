@@ -1,0 +1,3 @@
+[submodule "external/flibcpp"]
+	path = external/flibcpp
+	url = ../flibcpp

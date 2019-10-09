@@ -6,23 +6,50 @@
 #---------------------------------------------------------------------------#
 
 cmake_minimum_required(VERSION 3.9)
-project(FlibcppExample VERSION 0.1.0 LANGUAGES Fortran)
+project(FlibcppExampleApp VERSION 0.1.0 LANGUAGES Fortran)
+
+include(GNUInstallDirs)
 
 #---------------------------------------------------------------------------#
 # OPTIONS
 #---------------------------------------------------------------------------#
 
-if (NOT DEFINED(CMAKE_INSTALL_RPATH_USE_LINK_PATH))
+# Build static libs by default
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
+# Use a local copy of Flibcpp rather than an external installation
+option(BUILTIN_FLIBCPP
+  "Download Git submodules during configuration"
+  ON)
+
+# Set up rpaths
+if (NOT DEFINED CMAKE_INSTALL_RPATH_USE_LINK_PATH)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON CACHE STRING
-      "Inform installed binaries of linked library rpaths")
+      "Inform installed binaries of external library rpaths")
+endif()
+
+if (BUILD_SHARED_LIBS)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}" CACHE STRING
+      "Inform installed binaries of internal library rpaths")
 endif()
 
 #---------------------------------------------------------------------------#
-# DEPENDENCIES
+# EXTERNAL DEPENDENCIES
 #---------------------------------------------------------------------------#
 
-# Use the 'FlibcppConfig.cmake' file installed by flibcpp
-find_package(Flibcpp REQUIRED CONFIG)
+if (BUILTIN_FLIBCPP)
+  include(external/SubmoduleUtils.cmake)
+  load_submodule(external/flibcpp)
+  add_subdirectory(external/flibcpp)
+  if (NOT BUILD_SHARED_LIBS)
+    # The C++ runtime libraries are scoped to the subdirectory, and since we're
+    # not using shared libs, they will not be linked into the example app.
+    # Enable the CXX language in *this* scope to avoid link errors.
+    enable_language(CXX)
+  endif()
+else()
+  find_package(Flibcpp REQUIRED CONFIG)
+endif()
 
 #---------------------------------------------------------------------------#
 # LIBRARY
@@ -45,14 +72,15 @@ target_include_directories(example_backend
 # Link against Flibcpp libraries
 target_link_libraries(example_backend Flibcpp::flc_random Flibcpp::flc_algorithm)
 
+# Install
+install(TARGETS example_backend)
+
 #---------------------------------------------------------------------------#
 # APP
 #---------------------------------------------------------------------------#
-include(GNUInstallDirs)
 
 add_executable(example app/example.f90)
 target_link_libraries(example example_backend)
 
-install(TARGETS example
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS example)
 

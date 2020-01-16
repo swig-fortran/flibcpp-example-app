@@ -73,7 +73,10 @@ target_include_directories(example_backend
 target_link_libraries(example_backend Flibcpp::flc_random Flibcpp::flc_algorithm)
 
 # Install
-install(TARGETS example_backend)
+install(TARGETS example_backend
+  LIBRARY DESTINATION	${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION	${CMAKE_INSTALL_LIBDIR}
+)
 
 #---------------------------------------------------------------------------#
 # APP
@@ -82,5 +85,7 @@ install(TARGETS example_backend)
 add_executable(example app/example.f90)
 target_link_libraries(example example_backend)
 
-install(TARGETS example)
+install(TARGETS example
+  RUNTIME DESTINATION	${CMAKE_INSTALL_BINDIR}
+)
 

@@ -1,13 +1,23 @@
 # Flibcpp example app
 
 Example standalone application that uses Flibcpp (and nothing else, not even a
-C++ compiler). To test:
+C++ compiler).
 
-1. Download and install [Flibcpp](https://github.com/swig-fortran/flibcpp)
-2. Clone this repository; `git clone https://github.com/swig-fortran/flibcpp-example-app`
-3. Create a build directory and execute `cmake $PATH_TO_EXAMPLE_SOURCE`. If
-   your installation location for `Flibcpp` is nonstandard, you'll probably
-   want to include it in your `CMAKE_PREFIX_PATH` environment variable before
-   running CMake.
-4. Build and run: `make && ./example`
-   
+## Build with automatically downloaded flibcpp
+
+1. Clone this repository: `git clone https://github.com/swig-fortran/flibcpp-example-app`
+2. Create a build directory: `mkdir build && cd build`
+3. Configure, build, and run: `cmake ../flibcpp-example-app && make &&
+   ./example`
+
+## Build with externally installed flibcpp
+
+Clone this repository and create a build directory as above. Provide your
+existing flibcpp's installation prefix to CMake using the `CMAKE_PREFIX_PATH`
+environment variable, and disable the `BUILDIN_FLIBCPP` option on the
+configuration line:
+```console
+$ CMAKE_PREFIX_PATH=/usr/local/myflibcpp \
+> cmake -DBUILDIN_FLIBCPP=OFF ../flibcpp-example-app
+```
+Then make and run as before.

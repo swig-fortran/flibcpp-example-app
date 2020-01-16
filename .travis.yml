@@ -1,0 +1,24 @@
+dist: bionic
+sudo: required # apt-get done in before_install.sh
+language: minimal
+os: linux
+
+# Only build master or PRs merging into master
+branches:
+  only:
+  - master
+
+# List of configurations to check
+jobs:
+  - env: BUILTIN_FLIBCPP=ON SHARED=ON GENERATOR=make
+  - env: BUILTIN_FLIBCPP=OFF SHARED=OFF GCC_VERSION=8 GENERATOR=ninja
+
+# Build phases
+before_install:
+  - source ./scripts/travis/before_install.sh
+install:
+  - ./scripts/travis/install.sh
+script:
+  - run_script configure
+  - run_script compile
+  - run_script deploy

@@ -4,7 +4,7 @@
 !-----------------------------------------------------------------------------!
 module example_backend
   use iso_c_binding
-  use flc_random, only : Engine
+  use flc_random, only : Engine => MersenneEngine4
   implicit none
 
   integer, dimension(:), allocatable :: example_array
@@ -16,8 +16,8 @@ subroutine init(num_ints, seed)
   use, intrinsic :: ISO_C_BINDING
   implicit none
   integer, intent(in) :: num_ints
-  integer(C_INT64_T), intent(in), optional :: seed
-  integer(C_INT64_T) :: seedval = 12345_c_int64_t
+  integer(C_INT32_T), intent(in), optional :: seed
+  integer(C_INT32_T) :: seedval = 12345_c_int32_t
 
   if (present(seed)) seedval = seed
     
